@@ -1,2 +1,2 @@
 # springboot-rabbitmq
-springboot 与 rabbbitmq 整合
+springboot 与 rabbitmq 整合

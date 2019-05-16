@@ -1,0 +1,60 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    virtual-host: /DEV
+    username: dev
+    password: dev
+    connection-timeout: 2000ms
+    publisher-confirms: true
+    publisher-returns: true
+    dynamic: true
+    listener:
+      type: simple
+#      direct:
+#        prefetch: 10
+#        idle-event-interval: 5000ms
+#        acknowledge-mode: manual
+#        auto-startup: true
+#        default-requeue-rejected: true
+#        missing-queues-fatal: true
+#        consumers-per-queue: 5
+#        retry:
+#          enabled: true
+#          max-attempts: 6
+#          initial-interval: 1000ms
+#          max-interval: 5000ms
+#          multiplier: 1.5
+#          stateless: true
+      simple:
+        prefetch: 20
+        idle-event-interval: 5000ms
+        acknowledge-mode: manual
+        auto-startup: true
+        concurrency: 1
+        max-concurrency: 1
+        default-requeue-rejected: true
+        missing-queues-fatal: true
+        retry:
+          enabled: true
+          max-attempts: 6
+          initial-interval: 1000ms
+          max-interval: 5000ms
+          multiplier: 2
+          stateless: false
+    #    cache:
+#      connection:
+#        mode: channel
+#        size: 20
+#      channel:
+#        checkout-timeout: 2000ms
+    template:
+      receive-timeout: 5000ms
+      reply-timeout: 5000ms
+      mandatory: true
+      retry:
+        enabled: true
+        max-attempts: 6
+        initial-interval: 1000ms
+        max-interval: 5000ms
+        multiplier: 2

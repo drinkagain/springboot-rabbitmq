@@ -11,6 +11,10 @@
 .mtj.tmp/
 
 # Package Files #
+springboot-rabbitmq.iml
+target/
+.mvn
+.idea
 *.jar
 *.war
 *.nar

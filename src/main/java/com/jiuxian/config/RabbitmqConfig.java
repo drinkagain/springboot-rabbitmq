@@ -4,13 +4,15 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.retry.MessageRecoverer;
+import org.springframework.amqp.rabbit.retry.RepublishMessageRecoverer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import org.springframework.retry.interceptor.StatefulRetryOperationsInterceptor;
 
 /**
  * Author: jiuxian
@@ -25,23 +27,19 @@ public class RabbitmqConfig {
     public final static String QUEUE_ORDER_ALL = "order:all";
     public final static String QUEUE_ORDER_DEL = "order:del";
 
-    @Resource
-    private RabbitTemplate rabbitTemplate;
+    @Bean
+    public MessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
 
-
-    @PostConstruct
-    public void initRabbitTemplate() {
-        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
+    @Bean
+    public MessageRecoverer messageRecoverer(RabbitTemplate rabbitTemplate) {
+        return new RepublishMessageRecoverer(rabbitTemplate, "retry-exchange", "retry.order");
     }
 
     @Bean
     public Queue orderCreate() {
         return new Queue(QUEUE_ORDER_ALL);
-    }
-
-    @Bean
-    public Queue orderDel() {
-        return new Queue(QUEUE_ORDER_DEL);
     }
 
     @Bean
@@ -56,14 +54,4 @@ public class RabbitmqConfig {
                 .to(this.topicExchange())
                 .with("order.*");
     }
-
-
-    @Bean
-    public Binding topicBinding2() {
-        return BindingBuilder
-                .bind(this.orderDel())
-                .to(this.topicExchange())
-                .with("order.del");
-    }
-
 }

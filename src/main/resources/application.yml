@@ -9,23 +9,27 @@ spring:
     publisher-confirms: true
     publisher-returns: true
     dynamic: true
+    cache:
+      connection:
+        mode: channel
+      channel:
+        size: 20
     listener:
-      type: simple
-#      direct:
-#        prefetch: 10
-#        idle-event-interval: 5000ms
-#        acknowledge-mode: manual
-#        auto-startup: true
-#        default-requeue-rejected: true
-#        missing-queues-fatal: true
-#        consumers-per-queue: 5
-#        retry:
-#          enabled: true
-#          max-attempts: 6
-#          initial-interval: 1000ms
-#          max-interval: 5000ms
-#          multiplier: 1.5
-#          stateless: true
+      type: direct
+      direct:
+        prefetch: 10
+        idle-event-interval: 5000ms
+        acknowledge-mode: manual
+        auto-startup: true
+        default-requeue-rejected: true
+        missing-queues-fatal: true
+        consumers-per-queue: 5
+        retry:
+          enabled: true
+          max-attempts: 6
+          initial-interval: 5000ms
+          multiplier: 2
+          stateless: true
       simple:
         prefetch: 20
         idle-event-interval: 5000ms
@@ -38,16 +42,9 @@ spring:
         retry:
           enabled: true
           max-attempts: 6
-          initial-interval: 1000ms
-          max-interval: 5000ms
-          multiplier: 2
-          stateless: false
-    #    cache:
-#      connection:
-#        mode: channel
-#        size: 20
-#      channel:
-#        checkout-timeout: 2000ms
+          initial-interval: 2000ms
+          multiplier: 3
+          stateless: true
     template:
       receive-timeout: 5000ms
       reply-timeout: 5000ms
@@ -56,5 +53,4 @@ spring:
         enabled: true
         max-attempts: 6
         initial-interval: 1000ms
-        max-interval: 5000ms
         multiplier: 2
